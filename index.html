@@ -7,6 +7,35 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+        /* Подключение шрифтов */
+        @font-face {
+            font-family: 'Product Sans';
+            src: url('fonts/ProductSans-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'Product Sans';
+            src: url('fonts/ProductSans-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'Product Sans';
+            src: url('fonts/ProductSans-Italic.ttf') format('truetype');
+            font-weight: normal;
+            font-style: italic;
+        }
+        
+        @font-face {
+            font-family: 'Product Sans';
+            src: url('fonts/ProductSans-BoldItalic.ttf') format('truetype');
+            font-weight: bold;
+            font-style: italic;
+        }
+
         :root {
             --bg-light: #f5f5f7;
             --bg-dark: #1d1d1f;
@@ -20,17 +49,18 @@
             --accent-color-2: #ff8c00;
             --accent-color-3: #34c759;
             --accent-color-4: #ff2d55;
-            --blob-color-1: #4285f4;
-            --blob-color-2: #ea4335;
-            --blob-color-3: #fbbc05;
-            --blob-color-4: #34a853;
+            --header-height: 72px;
+            --mobile-nav-height: 80px;
+            --container-padding: 16px;
+            --border-radius: 9999px;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Product Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             transition: background-color 0.5s, color 0.5s;
             position: relative;
             overflow-x: hidden;
+            padding-bottom: calc(var(--mobile-nav-height) + 24px);
         }
 
         .dark-mode {
@@ -46,7 +76,10 @@
         .glassmorphism {
             backdrop-filter: blur(var(--blur-light));
             -webkit-backdrop-filter: blur(var(--blur-light));
-            transition: background-color 0.5s, border-color 0.5s;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
         
         html {
@@ -56,24 +89,28 @@
         .narrow-container {
             max-width: 1100px;
             margin: 0 auto;
+            padding: 0 var(--container-padding);
         }
 
         .light-mode .glassmorphism {
             background-color: var(--card-bg-light);
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .dark-mode .glassmorphism {
             background-color: var(--card-bg-dark);
-            border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(var(--blur-dark));
             -webkit-backdrop-filter: blur(var(--blur-dark));
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .header-sticky {
             position: sticky;
-            top: 0;
+            top: 12px;
             z-index: 50;
+            margin: 12px auto;
+            max-width: 1100px;
+            left: var(--container-padding);
+            right: var(--container-padding);
         }
 
         .material-shape-1 {
@@ -85,9 +122,35 @@
         }
         
         .gradient-text {
-            background: linear-gradient(90deg, var(--accent-color-1), var(--accent-color-4));
+            background: linear-gradient(90deg, var(--accent-color-1), var(--accent-color-4), var(--accent-color-1));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: gradient-flow 4s linear infinite;
+        }
+
+        .animated-gradient-text {
+            background: linear-gradient(
+                90deg,
+                #0071e3,
+                #ff8c00,
+                #34c759,
+                #ff2d55,
+                #0071e3
+            );
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-flow 8s linear infinite;
+        }
+
+        @keyframes gradient-flow {
+            0% {
+                background-position: 0% center;
+            }
+            100% {
+                background-position: 200% center;
+            }
         }
 
         .scroll-reveal {
@@ -101,7 +164,7 @@
             transform: translateY(0);
         }
 
-        /* Фон */
+        /* Фон - заменяем blur на статичные изображения */
         .background-container {
             position: fixed;
             top: 0;
@@ -110,46 +173,91 @@
             height: 100%;
             z-index: -1;
             overflow: hidden;
+            pointer-events: none;
         }
 
         .blob {
             position: absolute;
-            border-radius: 50%;
-            filter: blur(70px);
-            opacity: 0.2;
-            width: 50vw;
-            height: 50vw;
+            width: 75vw;
+            height: 80vw;
+            max-width: 800px;
+            max-height: 800px;
+            opacity: 1;
+            will-change: transform;
+            transition: transform 0.1s linear;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
         .blob1 { 
-            background: var(--blob-color-1);
-            top: -25%;
-            left: -15%;
+            background-image: url('blue.webp');
+            top: -70%;
+            left: -20%;
         }
 
         .blob2 { 
-            background: var(--blob-color-2);
-            top: -15%;
+            background-image: url('red.webp');
+            top: -40%;
             right: -25%;
         }
 
         .blob3 { 
-            background: var(--blob-color-3);
-            bottom: -25%;
-            left: 5%;
+            background-image: url('yellow.webp');
+            bottom: 25%;
+            left: -25%;
         }
 
         .blob4 { 
-            background: var(--blob-color-4);
-            bottom: -15%;
+            background-image: url('green.webp');
+            bottom: -50%;
             right: -15%;
+        }
+
+        /* Стили для фото */
+        .photo-container {
+            position: relative;
+            display: inline-block;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 10;
+        }
+
+        .photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .photo-container:hover .photo-overlay {
+            background-color: rgba(0, 0, 0, 0.6);
+            opacity: 1;
+        }
+
+        .telegram-icon {
+            color: white;
+            font-size: 2.5rem;
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        .photo-container:hover .telegram-icon {
+            transform: scale(1);
         }
 
         /* Карточки и кнопки */
         .card-interactive, .glass-btn {
             position: relative;
             overflow: hidden;
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         
         .card-interactive:hover, .glass-btn:hover {
@@ -186,6 +294,7 @@
             width: 100%;
             height: 256px;
             overflow: hidden;
+            border-radius: 16px;
         }
 
         .video-container iframe {
@@ -205,7 +314,7 @@
             padding: 0.75rem 1.5rem;
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border-radius: 9999px;
+            border-radius: var(--border-radius);
             font-weight: 600;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
@@ -229,86 +338,148 @@
             gap: 1.5rem;
         }
         
+        .desktop-nav a {
+            font-size: 1.125rem;
+            font-weight: normal;
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        
+        .desktop-nav a:hover {
+            transform: translateY(-2px);
+        }
+        
         .mobile-nav {
             display: none;
         }
         
-        /* Бургер меню */
-        .burger-menu {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 44px;
-            height: 44px;
-            cursor: pointer;
-            z-index: 110;
-            position: relative;
-        }
-        
-        .burger-line {
-            width: 22px;
-            height: 2px;
-            background-color: currentColor;
-            margin: 2px 0;
-            transition: all 0.3s ease;
-        }
-        
-        .burger-menu.active .burger-line:nth-child(1) {
-            transform: translateY(6px) rotate(45deg);
-        }
-        
-        .burger-menu.active .burger-line:nth-child(2) {
+        /* Анимация для фото в хедере */
+        .header-photo {
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 0;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             opacity: 0;
         }
-        
-        .burger-menu.active .burger-line:nth-child(3) {
-            transform: translateY(-6px) rotate(-45deg);
+
+        .header-title-container {
+            display: flex;
+            align-items: center;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            justify-content: flex-start;
         }
-        
-        /* Мобильное меню */
-        .mobile-menu {
+
+        /* Мобильная навигация */
+        .mobile-bottom-nav {
             position: fixed;
-            top: 0;
-            right: -100%;
-            width: 75%;
-            height: 100vh;
-            backdrop-filter: blur(var(--blur-light));
-            -webkit-backdrop-filter: blur(var(--blur-light));
+            bottom: 12px;
+            left: 0;
+            right: 0;
+            height: var(--mobile-nav-height);
+            background: transparent;
+            display: flex;
+            justify-content: center;
+            padding: 0 var(--container-padding);
             z-index: 100;
-            transition: right 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0);
+        }
+
+        .mobile-nav-container {
+            width: 100%;
+            max-width: 1100px;
+            height: 100%;
+            display: flex;
+            position: relative;
+        }
+
+        .mobile-nav-buttons {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .mobile-nav-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 25%;
+            height: 100%;
+            border-radius: var(--border-radius);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            z-index: 0;
+            opacity: 0.75;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateZ(-1px);
+        }
+
+        .mobile-nav-button {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 6rem 2rem 2rem;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+            cursor: pointer;
+            color: inherit;
+            text-decoration: none;
+            font-size: 0.8rem;
+            min-width: 60px;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
 
-        .light-mode .mobile-menu {
-            background-color: rgba(255, 255, 255, 0.9);
-            border-left: 1px solid rgba(255, 255, 255, 0.2);
+        .mobile-nav-button.active {
+            color: white;
         }
 
-        .dark-mode .mobile-menu {
-            background-color: rgba(30, 30, 30, 0.9);
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(var(--blur-dark));
-            -webkit-backdrop-filter: blur(var(--blur-dark));
+        .mobile-nav-button i {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
 
-        .mobile-menu.active {
-            right: 0;
-            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+        .mobile-nav-button.active i {
+            transform: scale(1.1);
         }
 
-        .mobile-menu a {
-            padding: 1.2rem 0;
-            font-size: 1.3rem;
-            border-bottom: 1px solid rgba(128, 128, 128, 0.2);
-            transition: all 0.3s ease;
+        .mobile-nav-button span {
+            white-space: nowrap;
         }
 
-        .mobile-menu a:hover {
-            transform: translateX(10px);
-            color: var(--accent-color-1);
+        /* Стили для философии */
+        .philosophy-item {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .philosophy-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .philosophy-item:hover .philosophy-icon {
+            transform: scale(1.1);
+        }
+
+        .philosophy-icon {
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        .philosophy-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Стили для социальных иконок */
+        #contacts .flex a {
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        #contacts .flex a:hover {
+            transform: scale(1.2);
         }
 
         /* Адаптивность */
@@ -328,23 +499,51 @@
             }
             
             .blob {
-                filter: blur(50px);
-                opacity: 0.15;
                 width: 70vw;
                 height: 70vw;
+                opacity: 0.8;
+            }
+
+            .blob1 { 
+                top: -10%;
+                left: -5%;
+            }
+
+            .blob2 { 
+                top: -5%;
+                right: -15%;
+            }
+
+            .blob3 { 
+                bottom: -15%;
+                left: 0%;
+            }
+
+            .blob4 { 
+                bottom: -5%;
+                right: -5%;
+            }
+
+            .header-sticky {
+                margin: 12px var(--container-padding);
             }
         }
 
         @media (min-width: 769px) {
-            .mobile-menu {
+            .mobile-bottom-nav {
                 display: none;
+            }
+            
+            .header-sticky {
+                margin: 12px auto;
+                width: calc(100% - (var(--container-padding) * 2));
             }
         }
     </style>
 </head>
 <body class="light-mode">
 
-    <!-- Фон -->
+    <!-- Фон с статичными изображениями -->
     <div class="background-container">
         <div class="blob blob1"></div>
         <div class="blob blob2"></div>
@@ -355,8 +554,11 @@
     <!-- Навигация -->
     <header class="header-sticky glassmorphism">
         <nav class="narrow-container px-6 py-4 flex justify-between items-center">
-            <div class="text-2xl font-bold header-title">
-                <a href="#">nnuduck.</a>
+            <div class="header-title-container">
+                <img src="myphoto.png" alt="Никита Амброси" class="header-photo">
+                <div class="text-2xl header-title">
+                    <a href="#">nnuduck.</a>
+                </div>
             </div>
             
             <div class="desktop-nav">
@@ -373,21 +575,33 @@
                 <button id="theme-switcher-mobile" class="focus:outline-none mr-2">
                     <i class="fas fa-sun text-xl"></i>
                 </button>
-                <div class="burger-menu">
-                    <div class="burger-line"></div>
-                    <div class="burger-line"></div>
-                    <div class="burger-line"></div>
-                </div>
             </div>
         </nav>
     </header>
 
-    <!-- Мобильное меню -->
-    <div class="mobile-menu">
-        <a href="#about" class="hover:text-gray-400">Обо мне</a>
-        <a href="#skills" class="hover:text-gray-400">Навыки</a>
-        <a href="#projects" class="hover:text-gray-400">Проекты</a>
-        <a href="#contacts" class="hover:text-gray-400">Контакты</a>
+    <!-- Мобильная навигация -->
+    <div class="mobile-bottom-nav">
+        <div class="mobile-nav-container glassmorphism">
+            <div class="mobile-nav-buttons">
+                <div class="mobile-nav-bg" style="background-color: var(--accent-color-1);"></div>
+                <a href="#about" class="mobile-nav-button active" data-index="0">
+                    <i class="fas fa-user"></i>
+                    <span>Обо мне</span>
+                </a>
+                <a href="#skills" class="mobile-nav-button" data-index="1">
+                    <i class="fas fa-tools"></i>
+                    <span>Навыки</span>
+                </a>
+                <a href="#projects" class="mobile-nav-button" data-index="2">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Проекты</span>
+                </a>
+                <a href="#contacts" class="mobile-nav-button" data-index="3">
+                    <i class="fas fa-envelope"></i>
+                    <span>Контакты</span>
+                </a>
+            </div>
+        </div>
     </div>
 
     <main class="narrow-container px-6 py-12">
@@ -402,7 +616,12 @@
         <section id="about" class="py-20 scroll-reveal">
             <div class="grid md:grid-cols-3 gap-12 items-center">
                 <div class="md:col-span-1">
-                    <img src="myphoto.png" alt="Фото Никиты Амброси" class="rounded-full mx-auto w-48 h-48 md:w-64 md:h-64 object-cover shadow-lg">
+                    <a href="https://www.t.me/nnuduck" target="_blank" class="photo-container" id="about-photo">
+                        <img src="myphoto.png" alt="Фото Никиты Амброси" class="rounded-full mx-auto w-48 h-48 md:w-64 md:h-64 object-cover shadow-lg" loading="lazy">
+                        <div class="photo-overlay">
+                            <i class="fab fa-telegram telegram-icon"></i>
+                        </div>
+                    </a>
                 </div>
                 <div class="md:col-span-2">
                     <h2 class="text-4xl font-bold mb-6">Немного обо мне</h2>
@@ -474,7 +693,7 @@
                     <div class="p-8">
                         <h3 class="text-2xl font-bold mb-2">Университетский короткометражный фильм</h3>
                         <p class="mb-4">Работа над короткометражным фильмом в качестве режиссёра и постановщика. Проект получил высокую оценку преподавателей.</p>
-                        <a href="https://www.youtube.com/embed/0kjBZuAoC54" target="_blank" class="font-semibold" style="color: var(--accent-color-1);">Подробнее &rarr;</a>
+                        <a href="https://www.youtube.com/watch?v=0kjBZuAoC54" target="_blank" class="font-semibold" style="color: var(--accent-color-1);">Подробнее &rarr;</a>
                     </div>
                 </div>
                 <div class="glassmorphism rounded-3xl overflow-hidden shadow-lg group card-interactive shine-effect">
@@ -490,7 +709,7 @@
                     <div class="p-8">
                         <h3 class="text-2xl font-bold mb-2">Коммерческая реклама в формате Reels/TikTok</h3>
                         <p class="mb-4">Создание коммерческого короткого ролика в одиночку. Реклама осветительного прибора для съёмок.</p>
-                        <a href="https://www.youtube.com/embed/7dIkzlcMvt0" target="_blank" class="font-semibold" style="color: var(--accent-color-1);">Подробнее &rarr;</a>
+                        <a href="https://www.youtube.com/watch?v=7dIkzlcMvt0" target="_blank" class="font-semibold" style="color: var(--accent-color-1);">Подробнее &rarr;</a>
                     </div>
                 </div>
             </div>
@@ -506,22 +725,22 @@
         <section id="philosophy" class="py-20 scroll-reveal">
             <h2 class="text-4xl font-bold text-center mb-12">Мой подход к работе</h2>
             <div class="grid md:grid-cols-3 gap-8 text-center">
-                <div class="p-4">
-                    <div class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center" style="background-color: var(--accent-color-1);">
+                <div class="p-4 philosophy-item">
+                    <div class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center philosophy-icon" style="background-color: var(--accent-color-1);">
                         <i class="fas fa-lightbulb text-4xl text-white"></i>
                     </div>
                     <h3 class="text-2xl font-semibold mb-2">Креативность</h3>
                     <p class="text-gray-500 dark:text-gray-400">Я верю, что каждый проект — это возможность создать что-то уникальное. Я всегда ищу новые подходы и нестандартные решения.</p>
                 </div>
-                <div class="p-4">
-                     <div class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center" style="background-color: var(--accent-color-3);">
+                <div class="p-4 philosophy-item">
+                     <div class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center philosophy-icon" style="background-color: var(--accent-color-3);">
                         <i class="fas fa-users text-4xl text-white"></i>
                     </div>
                     <h3 class="text-2xl font-semibold mb-2">Командная работа</h3>
                     <p class="text-gray-500 dark:text-gray-400">Создание качественного контента — всегда результат слаженной работы команды. Я ценю коллаборацию и открытое общение.</p>
                 </div>
-                <div class="p-4">
-                     <div class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center" style="background-color: var(--accent-color-2);">
+                <div class="p-4 philosophy-item">
+                     <div class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center philosophy-icon" style="background-color: var(--accent-color-2);">
                         <i class="fas fa-film text-4xl text-white"></i>
                     </div>
                     <h3 class="text-2xl font-semibold mb-2">Внимание к деталям</h3>
@@ -532,7 +751,7 @@
 
         <!-- Контакты -->
         <section id="contacts" class="py-20 scroll-reveal">
-            <h2 class="text-4xl font-bold text-center mb-12">Свяжитесь со мной</h2>
+            <h2 class="text-4xl font-bold text-center mb-12 animated-gradient-text">Свяжитесь со мной</h2>
             <div class="text-center">
                 <p class="text-lg mb-8">Я всегда открыт для новых проектов и сотрудничества. Давайте создавать что-то удивительное вместе!</p>
                 <div class="flex justify-center space-x-6 mb-8">
@@ -570,23 +789,27 @@
         const themeSwitcher = document.getElementById('theme-switcher');
         const themeSwitcherMobile = document.getElementById('theme-switcher-mobile');
         const body = document.body;
-        const icon = themeSwitcher?.querySelector('i');
-        const iconMobile = themeSwitcherMobile?.querySelector('i');
-        const burgerMenu = document.querySelector('.burger-menu');
-        const mobileMenu = document.querySelector('.mobile-menu');
+        const blobs = document.querySelectorAll('.blob');
+        const headerPhoto = document.querySelector('.header-photo');
+        const aboutPhoto = document.getElementById('about-photo');
+        const headerTitleContainer = document.querySelector('.header-title-container');
+        const mobileNavButtons = document.querySelectorAll('.mobile-nav-button');
+        const mobileNavBg = document.querySelector('.mobile-nav-bg');
+        const accentColors = [
+            'var(--accent-color-1)',
+            'var(--accent-color-2)',
+            'var(--accent-color-3)',
+            'var(--accent-color-4)'
+        ];
 
         // Функция для применения темы
         const applyTheme = (theme) => {
             if (theme === 'dark') {
                 body.classList.remove('light-mode');
                 body.classList.add('dark-mode');
-                if (icon) icon.className = 'fas fa-moon text-xl';
-                if (iconMobile) iconMobile.className = 'fas fa-moon text-xl';
             } else {
                 body.classList.remove('dark-mode');
                 body.classList.add('light-mode');
-                if (icon) icon.className = 'fas fa-sun text-xl';
-                if (iconMobile) iconMobile.className = 'fas fa-sun text-xl';
             }
         };
 
@@ -595,57 +818,195 @@
         if (!savedTheme) savedTheme = prefersDarkScheme.matches ? 'dark' : 'light';
         applyTheme(savedTheme);
 
+        // Установка иконок после загрузки темы
+        const allIcons = document.querySelectorAll('#theme-switcher i, #theme-switcher-mobile i');
+        allIcons.forEach(icon => {
+            icon.className = body.classList.contains('light-mode') ? 'fas fa-moon text-xl' : 'fas fa-sun text-xl';
+        });
+
         // Переключение темы
         const toggleTheme = () => {
             const newTheme = body.classList.contains('light-mode') ? 'dark' : 'light';
             applyTheme(newTheme);
             localStorage.setItem('theme', newTheme);
+            
+            // Синхронизация иконок на всех переключателях
+            allIcons.forEach(icon => {
+                icon.className = body.classList.contains('light-mode') ? 'fas fa-moon text-xl' : 'fas fa-sun text-xl';
+            });
         };
 
         themeSwitcher?.addEventListener('click', toggleTheme);
         themeSwitcherMobile?.addEventListener('click', toggleTheme);
 
-        // Бургер меню
-        if (burgerMenu && mobileMenu) {
-            burgerMenu.addEventListener('click', (e) => {
-                e.stopPropagation();
-                burgerMenu.classList.toggle('active');
-                mobileMenu.classList.toggle('active');
+        // Анимация при скролле
+        const scrollRevealElements = document.querySelectorAll('.scroll-reveal');
+        
+        // Используем Intersection Observer для анимации при скролле
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
             });
+        }, observerOptions);
+        
+        scrollRevealElements.forEach(el => {
+            observer.observe(el);
+        });
+
+        // Анимация фото в хедере при скролле
+        function handleHeaderPhotoAnimation() {
+            if (!aboutPhoto || !headerPhoto) return;
             
-            // Закрытие меню при клике на ссылку
-            mobileMenu.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => {
-                    burgerMenu.classList.remove('active');
-                    mobileMenu.classList.remove('active');
-                });
+            const aboutRect = aboutPhoto.getBoundingClientRect();
+            
+            if (aboutRect.top < 100 && aboutRect.bottom > 100) {
+                // Плавное появление фото в хедере
+                const progress = 1 - Math.max(0, Math.min(1, (aboutRect.top - 50) / 150));
+                headerPhoto.style.opacity = progress;
+                headerPhoto.style.width = `${progress * 40}px`;
+                headerPhoto.style.height = `${progress * 40}px`;
+                headerPhoto.style.marginRight = `${progress * 12}px`;
+                
+                // Уменьшение фото в секции "Обо мне"
+                const scale = 1 - progress * 0.3;
+                aboutPhoto.style.transform = `scale(${scale})`;
+            } else if (aboutRect.top >= 100) {
+                // Сброс стилей если мы выше секции "Обо мне"
+                headerPhoto.style.opacity = '0';
+                headerPhoto.style.width = '0';
+                headerPhoto.style.height = '0';
+                headerPhoto.style.marginRight = '0';
+                aboutPhoto.style.transform = 'scale(1)';
+            } else {
+                // Полное отображение фото в хедере если мы ниже секции
+                headerPhoto.style.opacity = '1';
+                headerPhoto.style.width = '40px';
+                headerPhoto.style.height = '40px';
+                headerPhoto.style.marginRight = '12px';
+                aboutPhoto.style.transform = 'scale(0.7)';
+            }
+        }
+
+        // Анимация для мобильной навигации
+        function updateMobileNavIndicator(index) {
+            mobileNavBg.style.transform = `translateX(${index * 100}%)`;
+            mobileNavBg.style.backgroundColor = accentColors[index];
+            
+            // Обновляем активные классы
+            mobileNavButtons.forEach((button, i) => {
+                if (i === index) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
             });
+        }
+
+        // Инициализация мобильной навигации
+        mobileNavButtons.forEach((button, index) => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                updateMobileNavIndicator(index);
+                
+                // Плавная прокрутка к секции
+                const targetId = button.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Обновление индикатора при скролле
+        function updateNavOnScroll() {
+            const sections = document.querySelectorAll('section');
+            let currentSection = '';
             
-            // Закрытие меню при клике вне его
-            document.addEventListener('click', (e) => {
-                if (mobileMenu.classList.contains('active') && 
-                    !mobileMenu.contains(e.target) && 
-                    !burgerMenu.contains(e.target)) {
-                    burgerMenu.classList.remove('active');
-                    mobileMenu.classList.remove('active');
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                
+                if (window.pageYOffset >= (sectionTop - 100) && 
+                    window.pageYOffset < (sectionTop + sectionHeight - 100)) {
+                    currentSection = section.getAttribute('id');
                 }
             });
             
-            // Предотвращаем закрытие при клике внутри меню
-            mobileMenu.addEventListener('click', (e) => e.stopPropagation());
+            // Обновляем активную кнопку
+            mobileNavButtons.forEach((button, index) => {
+                const targetId = button.getAttribute('href').substring(1);
+                if (targetId === currentSection) {
+                    updateMobileNavIndicator(index);
+                }
+            });
         }
 
-        // Анимация при скролле
-        const scrollRevealElements = document.querySelectorAll('.scroll-reveal');
-        const revealOnScroll = () => {
-            scrollRevealElements.forEach(el => {
-                const elementTop = el.getBoundingClientRect().top;
-                if (elementTop < window.innerHeight - 100) el.classList.add('visible');
+        // Параллакс эффект для блобов и анимация хедера (оптимизированная версия)
+        let ticking = false;
+        let headerTicking = false;
+        let scrollY = window.scrollY;
+        
+        const updateBlobs = () => {
+            blobs.forEach((blob, index) => {
+                // Разные коэффициенты для каждого блоба
+                const scrollFactors = [0.15, 0.1, 0.2, 0.05];
+                
+                // Эффект параллакса при скролле
+                const scrollYOffset = scrollY * scrollFactors[index];
+                
+                blob.style.transform = `translateY(${scrollYOffset}px)`;
             });
+            
+            ticking = false;
         };
 
-        window.addEventListener('scroll', revealOnScroll);
-        revealOnScroll();
+        const updateHeader = () => {
+            handleHeaderPhotoAnimation();
+            headerTicking = false;
+        };
+        
+        const onScroll = () => {
+            scrollY = window.scrollY;
+            
+            // Обновление навигации
+            updateNavOnScroll();
+            
+            // Обновление блобов
+            if (!ticking) {
+                requestAnimationFrame(updateBlobs);
+                ticking = true;
+            }
+
+            // Обновление хедера
+            if (!headerTicking) {
+                requestAnimationFrame(updateHeader);
+                headerTicking = true;
+            }
+        };
+        
+        // Слушаем события скролла
+        window.addEventListener('scroll', onScroll, { passive: true });
+        
+        // Инициализируем позицию блобов и анимацию фото
+        updateBlobs();
+        handleHeaderPhotoAnimation();
+        updateNavOnScroll();
+
+        // Оптимизация: отключаем сложные анимации когда страница не видима
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                window.removeEventListener('scroll', onScroll);
+            } else {
+                window.addEventListener('scroll', onScroll, { passive: true });
+            }
+        });
     </script>
 </body>
 </html>
