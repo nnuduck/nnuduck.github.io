@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>nnuduck.</title>
+    <title>Никита Амброси - Мультимедиа продюсер</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.0"></script>
     <style>
         /* Подключение шрифтов */
         @font-face {
@@ -81,7 +82,7 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
-        
+
         html {
             scroll-behavior: smooth;
         }
@@ -254,18 +255,18 @@
         }
 
         /* Карточки и кнопки */
-        .card-interactive, .glass-btn {
+        .tilt-card, .glass-btn {
             position: relative;
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         
-        .card-interactive:hover, .glass-btn:hover {
+        .tilt-card:hover, .glass-btn:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
         }
 
-        .dark-mode .card-interactive:hover, .dark-mode .glass-btn:hover {
+        .dark-mode .tilt-card:hover, .dark-mode .glass-btn:hover {
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.35);
         }
 
@@ -289,6 +290,18 @@
             transform: skewX(-25deg) translateX(350%);
         }
 
+        /* Fix for iframe overlay bug */
+        .tilt-card .video-container {
+            position: relative;
+            z-index: 1; /* Ensure iframe above glare */
+        }
+
+        .vanilla-tilt-glare {
+            pointer-events: none; /* Prevent glare from blocking clicks */
+            border-radius: inherit; /* Round corners */
+            overflow: hidden;
+        }
+
         .video-container {
             position: relative;
             width: 100%;
@@ -306,7 +319,7 @@
             border: none;
         }
 
-        /* Унифицированные стили кнопок */
+        /* Унифицированные стили кнопки */
         .glass-btn {
             display: inline-flex;
             align-items: center;
@@ -341,7 +354,23 @@
         .desktop-nav a {
             font-size: 1.125rem;
             font-weight: normal;
+            position: relative;
             transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        
+        .desktop-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: currentColor;
+            transition: width 0.3s ease;
+        }
+        
+        .desktop-nav a:hover::after {
+            width: 100%;
         }
         
         .desktop-nav a:hover {
@@ -449,11 +478,12 @@
             white-space: nowrap;
         }
 
-        /* Стили для философии */
+        /* Философия */
         .philosophy-item {
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
+            border-radius: 16px; /* Закругление углов */
         }
 
         .philosophy-item:hover {
@@ -473,13 +503,64 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
-        /* Стили для социальных иконок */
+        /* Социальные иконки */
         #contacts .flex a {
             transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
 
         #contacts .flex a:hover {
             transform: scale(1.2);
+        }
+
+        /* Новая карточка контактов */
+        .contact-card {
+            max-width: 500px; /* Увеличено */
+            margin: 0 auto;
+            cursor: pointer;
+        }
+
+        .contact-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px); /* Добавлен blur */
+            -webkit-backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            z-index: 1000;
+        }
+
+        .contact-modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .contact-modal {
+            max-width: 800px; /* Увеличено */
+            width: 90%;
+            transform: scale(0.8);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .contact-modal-overlay.active .contact-modal {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            cursor: pointer;
+            font-size: 1.5rem;
         }
 
         /* Адаптивность */
@@ -516,7 +597,6 @@
 
             .blob3 { 
                 bottom: -15%;
-                left: 0%;
             }
 
             .blob4 { 
@@ -526,6 +606,11 @@
 
             .header-sticky {
                 margin: 12px var(--container-padding);
+            }
+
+            /* Упрощение tilt на мобилке */
+            .tilt-card {
+                transition: transform 0.3s ease !important; /* Fallback lift only */
             }
         }
 
@@ -612,7 +697,7 @@
             <p class="text-xl md:text-2xl text-gray-500 dark:text-gray-400">Оператор, Режиссёр монтажа и Медиа продюсер из Кишинёва</p>
         </section>
 
-        <!-- Обо мне -->
+        <!-- Обо мне (сокращённый, с конкретикой) -->
         <section id="about" class="py-20 scroll-reveal">
             <div class="grid md:grid-cols-3 gap-12 items-center">
                 <div class="md:col-span-1">
@@ -626,10 +711,10 @@
                 <div class="md:col-span-2">
                     <h2 class="text-4xl font-bold mb-6">Немного обо мне</h2>
                     <p class="mb-4 text-lg leading-relaxed">
-                        Я студент второго курса Государственного Университета Молдовы, где изучаю мультимедиа производство. Моя страсть — это создание визуального контента, который рассказывает истории и вызывает эмоции. Я занимаюсь монтажом, графическим дизайном, съёмкой видео и постоянно развиваюсь в сфере кинематографа.
+                        Студент 2-го курса Государственного Университета Молдовы по специальности мультимедиа производство. Специализируюсь на видеомонтаже, съёмке, графическом дизайне и кинематографе. Участвовал в университетских проектах как оператор, продюсер и актёр — развиваю навыки лидерства в команде.
                     </p>
                     <p class="text-lg leading-relaxed">
-                        Уже успел поучаствовать в университетских и личных проектах в роли оператора, продюсера и даже актера. Эти проекты помогли мне развить навыки командной работы и лидерства в съёмочной группе. В свободное время я изучаю новые техники монтажа, экспериментирую с визуальными эффектами и снимаю короткометражные фильмы.
+                        В свободное время экспериментирую с VFX, снимаю короткометражки и изучаю новые техники. Ищу возможности для коммерческих проектов.
                     </p>
                     <div class="mt-6 grid grid-cols-2 gap-4">
                         <div>
@@ -657,19 +742,19 @@
         <section id="skills" class="py-20 scroll-reveal">
             <h2 class="text-4xl font-bold text-center mb-12">Мои навыки и умения</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-                <div class="glassmorphism p-6 rounded-3xl text-center shadow-md material-shape-1 card-interactive shine-effect">
+                <div class="glassmorphism p-6 rounded-3xl text-center shadow-md material-shape-1 tilt-card shine-effect">
                     <i class="fas fa-film text-4xl mb-4" style="color: var(--accent-color-1);"></i>
                     <h3 class="text-xl font-semibold">Видеомонтаж</h3>
                 </div>
-                <div class="glassmorphism p-6 rounded-3xl text-center shadow-md material-shape-2 card-interactive shine-effect">
+                <div class="glassmorphism p-6 rounded-3xl text-center shadow-md material-shape-2 tilt-card shine-effect">
                     <i class="fas fa-video text-4xl mb-4" style="color: var(--accent-color-2);"></i>
                     <h3 class="text-xl font-semibold">Видеосъёмка</h3>
                 </div>
-                <div class="glassmorphism p-6 rounded-3xl text-center shadow-md material-shape-1 card-interactive shine-effect">
+                <div class="glassmorphism p-6 rounded-3xl text-center shadow-md material-shape-1 tilt-card shine-effect">
                     <i class="fas fa-paint-brush text-4xl mb-4" style="color: var(--accent-color-3);"></i>
                     <h3 class="text-xl font-semibold">Графический дизайн</h3>
                 </div>
-                <div class="glassmorphism p-6 rounded-3xl text-center shadow-md material-shape-2 card-interactive shine-effect">
+                <div class="glassmorphism p-6 rounded-3xl text-center shadow-md material-shape-2 tilt-card shine-effect">
                     <i class="fas fa-theater-masks text-4xl mb-4" style="color: var(--accent-color-4);"></i>
                     <h3 class="text-xl font-semibold">Актёрское мастерство</h3>
                 </div>
@@ -680,7 +765,7 @@
         <section id="projects" class="py-20 scroll-reveal">
             <h2 class="text-4xl font-bold text-center mb-12">Мои проекты</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div class="glassmorphism rounded-3xl overflow-hidden shadow-lg group card-interactive shine-effect">
+                <div class="glassmorphism rounded-3xl overflow-hidden shadow-lg tilt-card shine-effect">
                     <div class="video-container">
                         <iframe 
                             src="https://www.youtube.com/embed/0kjBZuAoC54" 
@@ -696,7 +781,7 @@
                         <a href="https://www.youtube.com/watch?v=0kjBZuAoC54" target="_blank" class="font-semibold" style="color: var(--accent-color-1);">Подробнее &rarr;</a>
                     </div>
                 </div>
-                <div class="glassmorphism rounded-3xl overflow-hidden shadow-lg group card-interactive shine-effect">
+                <div class="glassmorphism rounded-3xl overflow-hidden shadow-lg tilt-card shine-effect">
                     <div class="video-container">
                         <iframe 
                             src="https://www.youtube.com/embed/7dIkzlcMvt0" 
@@ -715,7 +800,7 @@
             </div>
             
             <div class="text-center mt-12">
-                <a href="https://www.youtube.com/@nnuduck" target="_blank" class="glass-btn shine-effect">
+                <a href="https://www.youtube.com/@nnuduck" target="_blank" class="glass-btn shine-effect tilt-card">
                     <i class="fab fa-youtube mr-2"></i> Остальные видеопроекты
                 </a>
             </div>
@@ -725,21 +810,21 @@
         <section id="philosophy" class="py-20 scroll-reveal">
             <h2 class="text-4xl font-bold text-center mb-12">Мой подход к работе</h2>
             <div class="grid md:grid-cols-3 gap-8 text-center">
-                <div class="p-4 philosophy-item">
+                <div class="p-4 philosophy-item tilt-card shine-effect">
                     <div class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center philosophy-icon" style="background-color: var(--accent-color-1);">
                         <i class="fas fa-lightbulb text-4xl text-white"></i>
                     </div>
                     <h3 class="text-2xl font-semibold mb-2">Креативность</h3>
                     <p class="text-gray-500 dark:text-gray-400">Я верю, что каждый проект — это возможность создать что-то уникальное. Я всегда ищу новые подходы и нестандартные решения.</p>
                 </div>
-                <div class="p-4 philosophy-item">
+                <div class="p-4 philosophy-item tilt-card shine-effect">
                      <div class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center philosophy-icon" style="background-color: var(--accent-color-3);">
                         <i class="fas fa-users text-4xl text-white"></i>
                     </div>
                     <h3 class="text-2xl font-semibold mb-2">Командная работа</h3>
                     <p class="text-gray-500 dark:text-gray-400">Создание качественного контента — всегда результат слаженной работы команды. Я ценю коллаборацию и открытое общение.</p>
                 </div>
-                <div class="p-4 philosophy-item">
+                <div class="p-4 philosophy-item tilt-card shine-effect">
                      <div class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center philosophy-icon" style="background-color: var(--accent-color-2);">
                         <i class="fas fa-film text-4xl text-white"></i>
                     </div>
@@ -749,11 +834,10 @@
             </div>
         </section>
 
-        <!-- Контакты -->
+        <!-- Контакты (новая карточка) -->
         <section id="contacts" class="py-20 scroll-reveal">
             <h2 class="text-4xl font-bold text-center mb-12 animated-gradient-text">Свяжитесь со мной</h2>
             <div class="text-center">
-                <p class="text-lg mb-8">Я всегда открыт для новых проектов и сотрудничества. Давайте создавать что-то удивительное вместе!</p>
                 <div class="flex justify-center space-x-6 mb-8">
                     <a href="https://www.instagram.com/nnuduck/" target="_blank" class="text-2xl hover:text-blue-500 transition-colors">
                         <i class="fab fa-instagram"></i>
@@ -768,9 +852,31 @@
                         <i class="fab fa-youtube"></i>
                     </a>
                 </div>
-                <a href="mailto:tvkrsh.off@gmail.com" class="glass-btn shine-effect">Написать мне</a>
+
+                <div class="glassmorphism contact-card p-6 rounded-3xl text-center shadow-md tilt-card shine-effect" id="contact-card">
+                    <img src="qrtelegram.png" alt="QR Telegram" class="w-48 h-auto mx-auto mb-4 rounded-lg"> <!-- Увеличен QR -->
+                    <p class="text-lg">Свяжитесь со мной для сотрудничества в видео/дизайне проектах</p>
+                </div>
             </div>
         </section>
+
+        <!-- Модал для полноэкранной карточки -->
+        <div class="contact-modal-overlay" id="contact-modal-overlay">
+            <div class="glassmorphism contact-modal p-8 rounded-3xl text-center shadow-lg relative max-w-lg w-full tilt-card">
+                <i class="fas fa-times close-modal"></i>
+                <h3 class="text-2xl font-bold mb-4">Давайте обсудим ваш проект!</h3>
+                <p class="mb-6 text-lg">Я специализируюсь на видеомонтаже, съёмке и дизайне. Опыт: Университетские фильмы, коммерческая реклама. Свяжитесь через:</p>
+                <img src="qrtelegram.png" alt="QR Telegram" class="w-64 h-auto mx-auto mb-6 rounded-lg"> <!-- Увеличен в модале -->
+                <div class="flex justify-center gap-4">
+                    <a href="https://www.t.me/nnuduck" target="_blank" class="glass-btn shine-effect">
+                        <i class="fab fa-telegram mr-2"></i> Telegram
+                    </a>
+                    <a href="mailto:tvkrsh.off@gmail.com" class="glass-btn shine-effect">
+                        <i class="fas fa-envelope mr-2"></i> Email
+                    </a>
+                </div>
+            </div>
+        </div>
 
     </main>
 
@@ -842,7 +948,6 @@
         // Анимация при скролле
         const scrollRevealElements = document.querySelectorAll('.scroll-reveal');
         
-        // Используем Intersection Observer для анимации при скролле
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
@@ -867,25 +972,21 @@
             const aboutRect = aboutPhoto.getBoundingClientRect();
             
             if (aboutRect.top < 100 && aboutRect.bottom > 100) {
-                // Плавное появление фото в хедере
                 const progress = 1 - Math.max(0, Math.min(1, (aboutRect.top - 50) / 150));
                 headerPhoto.style.opacity = progress;
                 headerPhoto.style.width = `${progress * 40}px`;
                 headerPhoto.style.height = `${progress * 40}px`;
                 headerPhoto.style.marginRight = `${progress * 12}px`;
                 
-                // Уменьшение фото в секции "Обо мне"
                 const scale = 1 - progress * 0.3;
                 aboutPhoto.style.transform = `scale(${scale})`;
             } else if (aboutRect.top >= 100) {
-                // Сброс стилей если мы выше секции "Обо мне"
                 headerPhoto.style.opacity = '0';
                 headerPhoto.style.width = '0';
                 headerPhoto.style.height = '0';
                 headerPhoto.style.marginRight = '0';
                 aboutPhoto.style.transform = 'scale(1)';
             } else {
-                // Полное отображение фото в хедере если мы ниже секции
                 headerPhoto.style.opacity = '1';
                 headerPhoto.style.width = '40px';
                 headerPhoto.style.height = '40px';
@@ -899,23 +1000,16 @@
             mobileNavBg.style.transform = `translateX(${index * 100}%)`;
             mobileNavBg.style.backgroundColor = accentColors[index];
             
-            // Обновляем активные классы
             mobileNavButtons.forEach((button, i) => {
-                if (i === index) {
-                    button.classList.add('active');
-                } else {
-                    button.classList.remove('active');
-                }
+                button.classList.toggle('active', i === index);
             });
         }
 
-        // Инициализация мобильной навигации
         mobileNavButtons.forEach((button, index) => {
             button.addEventListener('click', (e) => {
                 e.preventDefault();
                 updateMobileNavIndicator(index);
                 
-                // Плавная прокрутка к секции
                 const targetId = button.getAttribute('href');
                 const targetElement = document.querySelector(targetId);
                 if (targetElement) {
@@ -927,43 +1021,32 @@
         // Обновление индикатора при скролле
         function updateNavOnScroll() {
             const sections = document.querySelectorAll('section');
-            let currentSection = '';
+            let currentIndex = 0;
             
-            sections.forEach(section => {
+            sections.forEach((section, index) => {
                 const sectionTop = section.offsetTop;
                 const sectionHeight = section.offsetHeight;
                 
                 if (window.pageYOffset >= (sectionTop - 100) && 
                     window.pageYOffset < (sectionTop + sectionHeight - 100)) {
-                    currentSection = section.getAttribute('id');
+                    currentIndex = index;
                 }
             });
             
-            // Обновляем активную кнопку
-            mobileNavButtons.forEach((button, index) => {
-                const targetId = button.getAttribute('href').substring(1);
-                if (targetId === currentSection) {
-                    updateMobileNavIndicator(index);
-                }
-            });
+            updateMobileNavIndicator(currentIndex);
         }
 
-        // Параллакс эффект для блобов и анимация хедера (оптимизированная версия)
+        // Параллакс и скролл-хендлеры (оптимизировано)
         let ticking = false;
         let headerTicking = false;
         let scrollY = window.scrollY;
         
         const updateBlobs = () => {
             blobs.forEach((blob, index) => {
-                // Разные коэффициенты для каждого блоба
                 const scrollFactors = [0.15, 0.1, 0.2, 0.05];
-                
-                // Эффект параллакса при скролле
                 const scrollYOffset = scrollY * scrollFactors[index];
-                
                 blob.style.transform = `translateY(${scrollYOffset}px)`;
             });
-            
             ticking = false;
         };
 
@@ -974,37 +1057,72 @@
         
         const onScroll = () => {
             scrollY = window.scrollY;
-            
-            // Обновление навигации
             updateNavOnScroll();
             
-            // Обновление блобов
             if (!ticking) {
                 requestAnimationFrame(updateBlobs);
                 ticking = true;
             }
 
-            // Обновление хедера
             if (!headerTicking) {
                 requestAnimationFrame(updateHeader);
                 headerTicking = true;
             }
         };
         
-        // Слушаем события скролла
         window.addEventListener('scroll', onScroll, { passive: true });
         
-        // Инициализируем позицию блобов и анимацию фото
         updateBlobs();
         handleHeaderPhotoAnimation();
         updateNavOnScroll();
 
-        // Оптимизация: отключаем сложные анимации когда страница не видима
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
                 window.removeEventListener('scroll', onScroll);
             } else {
                 window.addEventListener('scroll', onScroll, { passive: true });
+            }
+        });
+
+        // Инициализация VanillaTilt для всех tilt-card (кроме фото)
+        document.addEventListener('DOMContentLoaded', () => {
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const tiltOptions = {
+                max: 10, // Уменьшено
+                speed: 400,
+                glare: true,
+                'max-glare': 0.3,
+                gyroscope: !isMobile || 'DeviceOrientationEvent' in window,
+                'gyroscope-min-angle-x': -15, // Лимиты для мобилки
+                'gyroscope-max-angle-x': 15,
+                'gyroscope-min-angle-y': -15,
+                'gyroscope-max-angle-y': 15
+            };
+
+            // Инициализируем VanillaTilt только для элементов с классом tilt-card, кроме фото
+            const tiltCards = document.querySelectorAll('.tilt-card:not(#about-photo)');
+            VanillaTilt.init(tiltCards, tiltOptions);
+        });
+
+        // Логика модала
+        const contactCard = document.getElementById('contact-card');
+        const modalOverlay = document.getElementById('contact-modal-overlay');
+        const closeModal = document.querySelector('.close-modal');
+
+        contactCard.addEventListener('click', () => {
+            modalOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeModal.addEventListener('click', () => {
+            modalOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                modalOverlay.classList.remove('active');
+                document.body.style.overflow = '';
             }
         });
     </script>
