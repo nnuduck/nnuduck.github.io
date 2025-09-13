@@ -54,6 +54,11 @@
             --mobile-nav-height: 80px;
             --container-padding: 16px;
             --border-radius: 9999px;
+            /* Google brand colors */
+            --google-blue: #4285F4;
+            --google-red: #EA4335;
+            --google-yellow: #FBBC05;
+            --google-green: #34A853;
         }
 
         body {
@@ -165,7 +170,7 @@
             transform: translateY(0);
         }
 
-        /* Фон - заменяем blur на статичные изображения */
+        /* Фон с Google градиентами */
         .background-container {
             position: fixed;
             top: 0;
@@ -177,42 +182,46 @@
             pointer-events: none;
         }
 
-        .blob {
+        .google-gradient {
             position: absolute;
-            width: 75vw;
-            height: 80vw;
-            max-width: 800px;
-            max-height: 800px;
-            opacity: 1;
+            border-radius: 50%;
+            opacity: 0.7;
+            filter: blur(60px);
             will-change: transform;
             transition: transform 0.1s linear;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
         }
 
-        .blob1 { 
-            background-image: url('blue.webp');
-            top: -70%;
-            left: -20%;
+        /* Изменение положения градиентных кругов */
+        .gradient-1 {
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, var(--google-blue) 0%, transparent 70%);
+            top: -30%; /* Изменено с -20% */
+            left: -10%;
         }
 
-        .blob2 { 
-            background-image: url('red.webp');
-            top: -40%;
-            right: -25%;
-        }
-
-        .blob3 { 
-            background-image: url('yellow.webp');
-            bottom: 25%;
-            left: -25%;
-        }
-
-        .blob4 { 
-            background-image: url('green.webp');
-            bottom: -50%;
+        .gradient-2 {
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, var(--google-red) 0%, transparent 70%);
+            top: -20%; /* Изменено с -10% */
             right: -15%;
+        }
+
+        .gradient-3 {
+            width: 70vw;
+            height: 70vw;
+            background: radial-gradient(circle, var(--google-yellow) 0%, transparent 70%);
+            bottom: -30%; /* Изменено с -20% */
+            left: -15%;
+        }
+
+        .gradient-4 {
+            width: 55vw;
+            height: 55vw;
+            background: radial-gradient(circle, var(--google-green) 0%, transparent 70%);
+            bottom: -20%; /* Изменено с -10% */
+            right: -10%;
         }
 
         /* Стили для фото */
@@ -344,7 +353,7 @@
             border: 1px solid rgba(255, 255, 255, 0.25);
         }
 
-        /* Навигация */
+        /* Навигация - убраны анимации подчеркивания и поднятия */
         .desktop-nav {
             display: flex;
             align-items: center;
@@ -355,26 +364,11 @@
             font-size: 1.125rem;
             font-weight: normal;
             position: relative;
-            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-        }
-        
-        .desktop-nav a::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: currentColor;
-            transition: width 0.3s ease;
-        }
-        
-        .desktop-nav a:hover::after {
-            width: 100%;
+            transition: color 0.3s ease;
         }
         
         .desktop-nav a:hover {
-            transform: translateY(-2px);
+            color: #9ca3af; /* gray-400 */
         }
         
         .mobile-nav {
@@ -399,7 +393,7 @@
             justify-content: flex-start;
         }
 
-        /* Мобильная навигация */
+        /* Переработанная мобильная навигация */
         .mobile-bottom-nav {
             position: fixed;
             bottom: 12px;
@@ -480,7 +474,7 @@
 
         /* Философия */
         .philosophy-item {
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.4s cubic-bebezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
             border-radius: 16px; /* Закругление углов */
@@ -517,6 +511,7 @@
             max-width: 500px; /* Увеличено */
             margin: 0 auto;
             cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .contact-modal-overlay {
@@ -561,6 +556,85 @@
             right: 1rem;
             cursor: pointer;
             font-size: 1.5rem;
+            z-index: 10;
+        }
+
+        /* Анимация раскрытия карточки */
+        .expanded-card {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 2rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .expanded-card.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .expanded-content {
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .expanded-card.active .expanded-content {
+            transform: scale(1);
+        }
+
+        .expanded-qr {
+            width: 280px;
+            height: 280px;
+            margin: 0 auto 2rem;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .expanded-qr img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .social-icons-expanded {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .social-icons-expanded a {
+            font-size: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-icons-expanded a:hover {
+            transform: scale(1.2);
+        }
+
+        /* Новый стиль для кнопок в мобильной версии */
+        .expanded-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
         }
 
         /* Адаптивность */
@@ -579,28 +653,27 @@
                 font-size: 1.5rem;
             }
             
-            .blob {
-                width: 70vw;
-                height: 70vw;
-                opacity: 0.8;
+            .google-gradient {
+                opacity: 0.6;
             }
 
-            .blob1 { 
-                top: -10%;
+            /* Изменение положения градиентов для мобильных */
+            .gradient-1 { 
+                top: -20%; /* Изменено с -10% */
                 left: -5%;
             }
 
-            .blob2 { 
-                top: -5%;
+            .gradient-2 { 
+                top: -15%; /* Изменено с -5% */
                 right: -15%;
             }
 
-            .blob3 { 
-                bottom: -15%;
+            .gradient-3 { 
+                bottom: -25%; /* Изменено с -15% */
             }
 
-            .blob4 { 
-                bottom: -5%;
+            .gradient-4 { 
+                bottom: -15%; /* Изменено с -5% */
                 right: -5%;
             }
 
@@ -608,9 +681,30 @@
                 margin: 12px var(--container-padding);
             }
 
+            .expanded-qr {
+                width: 220px;
+                height: 220px;
+            }
+
             /* Упрощение tilt на мобилке */
             .tilt-card {
                 transition: transform 0.3s ease !important; /* Fallback lift only */
+            }
+
+            /* Специальные стили для кнопок в мобильной версии */
+            .expanded-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .expanded-buttons .glass-btn {
+                margin-bottom: 1rem;
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .expanded-buttons .glass-btn:last-child {
+                margin-bottom: 0;
             }
         }
 
@@ -623,17 +717,25 @@
                 margin: 12px auto;
                 width: calc(100% - (var(--container-padding) * 2));
             }
+            
+            .expanded-buttons {
+                flex-direction: row;
+            }
+            
+            .expanded-buttons .glass-btn {
+                margin: 0 0.5rem;
+            }
         }
     </style>
 </head>
 <body class="light-mode">
 
-    <!-- Фон с статичными изображениями -->
+    <!-- Фон с Google градиентами -->
     <div class="background-container">
-        <div class="blob blob1"></div>
-        <div class="blob blob2"></div>
-        <div class="blob blob3"></div>
-        <div class="blob blob4"></div>
+        <div class="google-gradient gradient-1"></div>
+        <div class="google-gradient gradient-2"></div>
+        <div class="google-gradient gradient-3"></div>
+        <div class="google-gradient gradient-4"></div>
     </div>
 
     <!-- Навигация -->
@@ -664,7 +766,7 @@
         </nav>
     </header>
 
-    <!-- Мобильная навигация -->
+    <!-- Переработанная мобильная навигация -->
     <div class="mobile-bottom-nav">
         <div class="mobile-nav-container glassmorphism">
             <div class="mobile-nav-buttons">
@@ -815,7 +917,7 @@
                         <i class="fas fa-lightbulb text-4xl text-white"></i>
                     </div>
                     <h3 class="text-2xl font-semibold mb-2">Креативность</h3>
-                    <p class="text-gray-500 dark:text-gray-400">Я верю, что каждый проект — это возможность создать что-то уникальное. Я всегда ищу новые подходы и нестандартные решения.</p>
+                    <p class="text-gray-500 dark:text-gray-400">Я верю, что каждый проект — это возможность создать что-то униканое. Я всегда ищу новые подходы и нестандартные решения.</p>
                 </div>
                 <div class="p-4 philosophy-item tilt-card shine-effect">
                      <div class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center philosophy-icon" style="background-color: var(--accent-color-3);">
@@ -839,40 +941,43 @@
             <h2 class="text-4xl font-bold text-center mb-12 animated-gradient-text">Свяжитесь со мной</h2>
             <div class="text-center">
                 <div class="flex justify-center space-x-6 mb-8">
-                    <a href="https://www.instagram.com/nnuduck/" target="_blank" class="text-2xl hover:text-blue-500 transition-colors">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="https://www.t.me/nnuduck" target="_blank" class="text-2xl hover:text-blue-500 transition-colors">
-                        <i class="fab fa-telegram"></i>
-                    </a>
-                    <a href="https://www.linkedin.com/in/%D0%BD%D0%B8%D0%BA%D0%B8%D1%82%D0%B0-%D0%B0%D0%BC%D0%B1%D1%80%D0%BE%D1%81%D0%B8-4281a7344/" target="_blank" class="text-2xl hover:text-blue-500 transition-colors">
-                        <i class="fab fa-linkedin"></i>
-                    </a>
-                    <a href="https://www.youtube.com/@nnuduck" target="_blank" class="text-2xl hover:text-blue-500 transition-colors">
-                        <i class="fab fa-youtube"></i>
-                    </a>
-                </div>
 
                 <div class="glassmorphism contact-card p-6 rounded-3xl text-center shadow-md tilt-card shine-effect" id="contact-card">
                     <img src="qrtelegram.png" alt="QR Telegram" class="w-48 h-auto mx-auto mb-4 rounded-lg"> <!-- Увеличен QR -->
-                    <p class="text-lg">Свяжитесь со мной для сотрудничества в видео/дизайне проектах</p>
+                    <p class="text-lg">Нажмите, чтобы открыть контакты</p>
                 </div>
             </div>
         </section>
 
         <!-- Модал для полноэкранной карточки -->
-        <div class="contact-modal-overlay" id="contact-modal-overlay">
-            <div class="glassmorphism contact-modal p-8 rounded-3xl text-center shadow-lg relative max-w-lg w-full tilt-card">
-                <i class="fas fa-times close-modal"></i>
-                <h3 class="text-2xl font-bold mb-4">Давайте обсудим ваш проект!</h3>
-                <p class="mb-6 text-lg">Я специализируюсь на видеомонтаже, съёмке и дизайне. Опыт: Университетские фильмы, коммерческая реклама. Свяжитесь через:</p>
-                <img src="qrtelegram.png" alt="QR Telegram" class="w-64 h-auto mx-auto mb-6 rounded-lg"> <!-- Увеличен в модале -->
-                <div class="flex justify-center gap-4">
-                    <a href="https://www.t.me/nnuduck" target="_blank" class="glass-btn shine-effect">
-                        <i class="fab fa-telegram mr-2"></i> Telegram
+        <div class="expanded-card" id="expanded-card">
+            <i class="fas fa-times close-modal text-white text-2xl"></i>
+            <div class="expanded-content">
+                <div class="expanded-qr tilt-card">
+                    <img src="qrtelegram.png" alt="QR Telegram">
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-white">Давайте обсудим ваш проект!</h3>
+                <p class="mb-6 text-lg text-gray-300">Я специализируюсь на видеомонтаже, съёмке и дизайне. Опыт: Университетские фильмы, коммерческая реклама. Свяжитесь через:</p>
+                
+                <div class="social-icons-expanded">
+                    <a href="https://www.instagram.com/nnuduck/" target="_blank" class="text-white hover:text-pink-400">
+                        <i class="fab fa-instagram"></i>
                     </a>
-                    <a href="mailto:tvkrsh.off@gmail.com" class="glass-btn shine-effect">
-                        <i class="fas fa-envelope mr-2"></i> Email
+                    <a href="https://www.linkedin.com/in/%D0%BD%D0%B8%D0%BA%D0%B8%D1%82%D0%B0-%D0%B0%D0%BC%D0%B1%D1%80%D0%BE%D1%81%D0%B8-4281a7344/" target="_blank" class="text-white hover:text-blue-300">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="https://www.youtube.com/@nnuduck" target="_blank" class="text-white hover:text-red-400">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+                
+                <!-- Обновленный контейнер для кнопок с классом expanded-buttons -->
+                <div class="expanded-buttons">
+                    <a href="https://www.t.me/nnuduck" target="_blank" class="glass-btn shine-effect tilt-card">
+                        <i class="fab fa-telegram mr-2"></i> Написать в Telegram
+                    </a>
+                    <a href="mailto:tvkrsh.off@gmail.com" class="glass-btn shine-effect tilt-card">
+                        <i class="fas fa-envelope mr-2"></i> Отправить email
                     </a>
                 </div>
             </div>
@@ -895,12 +1000,15 @@
         const themeSwitcher = document.getElementById('theme-switcher');
         const themeSwitcherMobile = document.getElementById('theme-switcher-mobile');
         const body = document.body;
-        const blobs = document.querySelectorAll('.blob');
+        const gradients = document.querySelectorAll('.google-gradient');
         const headerPhoto = document.querySelector('.header-photo');
         const aboutPhoto = document.getElementById('about-photo');
         const headerTitleContainer = document.querySelector('.header-title-container');
         const mobileNavButtons = document.querySelectorAll('.mobile-nav-button');
         const mobileNavBg = document.querySelector('.mobile-nav-bg');
+        const contactCard = document.getElementById('contact-card');
+        const expandedCard = document.getElementById('expanded-card');
+        const closeModalBtn = document.querySelector('.close-modal');
         const accentColors = [
             'var(--accent-color-1)',
             'var(--accent-color-2)',
@@ -995,14 +1103,52 @@
             }
         }
 
-        // Анимация для мобильной навигации
+        // Переработанная логика для мобильной навигации
         function updateMobileNavIndicator(index) {
+            // Ограничиваем индекс в допустимых пределах
+            index = Math.max(0, Math.min(3, index));
+            
             mobileNavBg.style.transform = `translateX(${index * 100}%)`;
             mobileNavBg.style.backgroundColor = accentColors[index];
             
             mobileNavButtons.forEach((button, i) => {
                 button.classList.toggle('active', i === index);
             });
+        }
+
+        // Переработанная функция для определения активного раздела
+        function updateNavOnScroll() {
+            const sections = [
+                document.getElementById('about'),
+                document.getElementById('skills'),
+                document.getElementById('projects'),
+                document.getElementById('contacts')
+            ];
+            
+            let currentIndex = 0;
+            let minDistance = Infinity;
+            
+            const viewportCenter = window.innerHeight / 2;
+            
+            sections.forEach((section, index) => {
+                if (!section) return;
+                
+                const rect = section.getBoundingClientRect();
+                const sectionCenter = rect.top + rect.height / 2;
+                const distance = Math.abs(sectionCenter - viewportCenter);
+                
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    currentIndex = index;
+                }
+            });
+            
+            // Если пользователь прокрутил до самого низа, активируем последнюю секцию
+            if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight - 50) {
+                currentIndex = sections.length - 1;
+            }
+            
+            updateMobileNavIndicator(currentIndex);
         }
 
         mobileNavButtons.forEach((button, index) => {
@@ -1013,39 +1159,28 @@
                 const targetId = button.getAttribute('href');
                 const targetElement = document.querySelector(targetId);
                 if (targetElement) {
-                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                    // Плавный скролл с учетом высоты фиксированного хедера
+                    const headerHeight = document.querySelector('.header-sticky').offsetHeight;
+                    const targetPosition = targetElement.offsetTop - headerHeight - 20;
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
                 }
             });
         });
-
-        // Обновление индикатора при скролле
-        function updateNavOnScroll() {
-            const sections = document.querySelectorAll('section');
-            let currentIndex = 0;
-            
-            sections.forEach((section, index) => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.offsetHeight;
-                
-                if (window.pageYOffset >= (sectionTop - 100) && 
-                    window.pageYOffset < (sectionTop + sectionHeight - 100)) {
-                    currentIndex = index;
-                }
-            });
-            
-            updateMobileNavIndicator(currentIndex);
-        }
 
         // Параллакс и скролл-хендлеры (оптимизировано)
         let ticking = false;
         let headerTicking = false;
         let scrollY = window.scrollY;
         
-        const updateBlobs = () => {
-            blobs.forEach((blob, index) => {
+        const updateGradients = () => {
+            gradients.forEach((gradient, index) => {
                 const scrollFactors = [0.15, 0.1, 0.2, 0.05];
                 const scrollYOffset = scrollY * scrollFactors[index];
-                blob.style.transform = `translateY(${scrollYOffset}px)`;
+                gradient.style.transform = `translateY(${scrollYOffset}px)`;
             });
             ticking = false;
         };
@@ -1060,7 +1195,7 @@
             updateNavOnScroll();
             
             if (!ticking) {
-                requestAnimationFrame(updateBlobs);
+                requestAnimationFrame(updateGradients);
                 ticking = true;
             }
 
@@ -1072,7 +1207,7 @@
         
         window.addEventListener('scroll', onScroll, { passive: true });
         
-        updateBlobs();
+        updateGradients();
         handleHeaderPhotoAnimation();
         updateNavOnScroll();
 
@@ -1104,27 +1239,99 @@
             VanillaTilt.init(tiltCards, tiltOptions);
         });
 
-        // Логика модала
-        const contactCard = document.getElementById('contact-card');
-        const modalOverlay = document.getElementById('contact-modal-overlay');
-        const closeModal = document.querySelector('.close-modal');
-
+        // Логика полноэкранной карточки
         contactCard.addEventListener('click', () => {
-            modalOverlay.classList.add('active');
+            expandedCard.classList.add('active');
             document.body.style.overflow = 'hidden';
         });
 
-        closeModal.addEventListener('click', () => {
-            modalOverlay.classList.remove('active');
+        closeModalBtn.addEventListener('click', () => {
+            expandedCard.classList.remove('active');
             document.body.style.overflow = '';
         });
 
-        modalOverlay.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) {
-                modalOverlay.classList.remove('active');
+        expandedCard.addEventListener('click', (e) => {
+            if (e.target === expandedCard) {
+                expandedCard.classList.remove('active');
                 document.body.style.overflow = '';
             }
         });
+
+        // Добавляем параллакс-эффект для полноэкранной карточки
+        function initExpandedCardParallax() {
+            const expandedContent = document.querySelector('.expanded-content');
+            if (!expandedContent) return;
+            
+            let mouseX = 0;
+            let mouseY = 0;
+            let targetX = 0;
+            let targetY = 0;
+            let animationFrameId = null;
+            
+            const updateParallax = () => {
+                // Плавное следование за целью
+                mouseX += (targetX - mouseX) * 0.1;
+                mouseY += (targetY - mouseY) * 0.1;
+                
+                // Вычисляем смещение (максимум 10px в каждую сторону)
+                const moveX = (mouseX * 20 - 10).toFixed(2);
+                const moveY = (mouseY * 20 - 10).toFixed(2);
+                
+                // Применяем трансформацию
+                expandedContent.style.transform = `
+                    translate3d(${moveX}px, ${moveY}px, 0)
+                `;
+                
+                animationFrameId = requestAnimationFrame(updateParallax);
+            };
+            
+            const handleMouseMove = (e) => {
+                // Нормализуем координаты мыши от 0 до 1
+                targetX = e.clientX / window.innerWidth;
+                targetY = e.clientY / window.innerHeight;
+            };
+            
+            // Запускаем анимацию только когда карточка открыта
+            const startParallax = () => {
+                if (expandedCard.classList.contains('active')) {
+                    if (!animationFrameId) {
+                        animationFrameId = requestAnimationFrame(updateParallax);
+                        window.addEventListener('mousemove', handleMouseMove);
+                    }
+                }
+            };
+            
+            // Останавливаем анимацию когда карточка закрыта
+            const stopParallax = () => {
+                if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null;
+                    
+                    window.removeEventListener('mousemove', handleMouseMove);
+                    
+                    // Сбрасываем позицию
+                    expandedContent.style.transform = '';
+                }
+            };
+            
+            // Наблюдаем за изменениями состояния карточки
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'class') {
+                        if (expandedCard.classList.contains('active')) {
+                            startParallax();
+                        } else {
+                            stopParallax();
+                        }
+                    }
+                });
+            });
+            
+            observer.observe(expandedCard, { attributes: true });
+        }
+
+        // Инициализируем параллакс для расширенной карточки
+        initExpandedCardParallax();
     </script>
 </body>
 </html>
