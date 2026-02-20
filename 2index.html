@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nikita Ambrosi | Media Producer</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Space+Grotesk:wght@300..900&display=swap" rel="stylesheet">
+    <!-- Material Symbols (для остальных иконок) -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <!-- Font Awesome 6 (брендовые иконки) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <script type="importmap">
+        {
+            "imports": {
+                "@material/web/": "https://esm.run/@material/web/"
+            }
+        }
+    </script>
+    <script type="module">
+        // Импортируем только то, что реально используется (кроме кнопок, они нам больше не нужны)
+        import '@material/web/ripple/ripple.js';
+        import '@material/web/chips/assist-chip.js';
+        import '@material/web/chips/chip-set.js';
+    </script>
+
+    <style>
+        :root {
+            --md-sys-color-background: #080808;
+            --md-sys-color-on-background: #ffffff;
+            --md-sys-color-surface: #121212;
+            --md-sys-color-on-surface: #ffffff;
+            --md-sys-color-primary: #d4ff00; /* Acid Green */
+            --md-sys-color-on-primary: #000000;
+            --md-sys-color-primary-container: #3d4d00;
+            --md-sys-color-on-primary-container: #e5ff73;
+            --md-sys-color-secondary: #ff0000; /* Red for tape */
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-body: 'Roboto', sans-serif;
+            --radius-xl: 40px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-background);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== АНИМИРОВАННЫЙ ШУМ ===== */
+        .noise-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E");
+            opacity: 0.4;
+            animation: filmGrain 0.2s steps(2) infinite;
+        }
+
+        @keyframes filmGrain {
+            0% { opacity: 0.3; }
+            50% { opacity: 0.5; }
+            100% { opacity: 0.3; }
+        }
+
+        /* ===== ПЕРФОРАЦИЯ ===== */
+        .perforation {
+            position: fixed; top: 0; bottom: 0; width: 30px;
+            background: repeating-linear-gradient(to bottom, transparent 0, transparent 20px, #000 20px, #000 40px);
+            z-index: 100; opacity: 0.2; pointer-events: none;
+        }
+        .perf-l { left: 0; } .perf-r { right: 0; }
+
+        /* ===== ДЕКОРАТИВНАЯ ЛЕНТА ===== */
+        .caution-tape {
+            width: 100vw;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            height: 100px;
+            background: repeating-linear-gradient(
+                -45deg,
+                #ff0000,
+                #ff0000 40px,
+                #eeeeee 40px,
+                #eeeeee 80px
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(-1deg);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            border-top: 4px solid #000;
+            border-bottom: 4px solid #000;
+        }
+
+        .hitchcock-quote {
+            background: #000;
+            color: #fff;
+            padding: 10px 30px;
+            font-family: var(--font-display);
+            font-weight: 900;
+            font-size: clamp(0.9rem, 4vw, 1.5rem);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* ===== ТИПОГРАФИКА ===== */
+        .display-huge {
+            font-family: var(--font-display);
+            font-size: clamp(4rem, 18vw, 16rem);
+            font-weight: 900; line-height: 0.8; letter-spacing: -0.05em;
+            text-transform: uppercase;
+        }
+
+        .text-outline {
+            -webkit-text-stroke: 2px var(--md-sys-color-primary);
+            color: transparent;
+        }
+
+        /* ===== ЛЕЙАУТ ===== */
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; position: relative; z-index: 10; }
+        
+        .bento-grid {
+            display: grid; grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem; margin: 4rem 0;
+        }
+
+        .m3-card {
+            background: var(--md-sys-color-surface);
+            border-radius: var(--radius-xl); padding: 2.5rem;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .m3-card:hover { transform: scale(1.01) rotate(0.5deg); border-color: var(--md-sys-color-primary); }
+
+        /* ===== БЕГУЩАЯ СТРОКА ===== */
+        .marquee {
+            background: var(--md-sys-color-primary); color: #000;
+            padding: 1rem 0; font-family: var(--font-display);
+            font-weight: 900; font-size: 2rem; text-transform: uppercase;
+            white-space: nowrap; overflow: hidden; transform: rotate(1deg);
+            width: 100vw;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+        }
+        .marquee-inner { display: inline-block; animation: scroll 20s linear infinite; }
+        @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        /* ===== ВИДЕО ===== */
+        .video-wrapper {
+            position: relative; padding-bottom: 56.25%; height: 0; 
+            overflow: hidden; border-radius: 24px; margin-top: 1rem;
+            background: #000;
+        }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+
+        .video-desc { margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.7; line-height: 1.4; }
+
+        /* ===== БЕЙДЖИ ===== */
+        .badge-md {
+            background: var(--md-sys-color-surface-variant, #2b2b2f);
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            color: var(--md-sys-color-on-surface, #fff);
+        }
+
+        /* ===== СЕТКА ===== */
+        .col-12 { grid-column: span 12; }
+        .col-8 { grid-column: span 8; }
+        .col-6 { grid-column: span 6; }
+        .col-4 { grid-column: span 4; }
+        @media (max-width: 900px) {
+            .col-8, .col-6, .col-4 { grid-column: span 12; }
+        }
+
+        /* ===== НОВЫЕ КНОПКИ (кастомные, в стиле MD3) ===== */
+        .social-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;                /* расстояние между иконкой и текстом */
+            height: 48px;
+            padding: 0 40px;          /* увеличенные отступы слева и справа */
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border-radius: 40px;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: box-shadow 0.2s, transform 0.1s;
+            min-width: 200px;          /* минимальная ширина, можно увеличить */
+            white-space: nowrap;
+            border: 2px solid transparent; /* запас для состояния :active */
+        }
+
+        .social-button:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transform: scale(1.02);
+        }
+
+        .social-button:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .social-button i {
+            font-size: 1.3rem;
+        }
+
+        .lang-btn {
+            background: none; border: 2px solid var(--md-sys-color-primary);
+            color: var(--md-sys-color-primary); padding: 0.5rem 1rem;
+            border-radius: 50px; cursor: pointer; font-weight: bold;
+            transition: 0.3s;
+        }
+        .lang-btn.active { background: var(--md-sys-color-primary); color: #000; }
+
+        /* ===== КИСЛОТНЫЙ ФУТЕР ===== */
+        .acid-section {
+            background: var(--md-sys-color-primary); color: #000;
+            padding: 6rem 2rem; text-align: center; margin-top: 4rem;
+            position: relative;
+        }
+
+        .footer-link {
+            text-decoration: none; color: #000; font-weight: 900; 
+            font-size: clamp(1.5rem, 5vw, 3rem); 
+            transition: 0.3s;
+            font-family: var(--font-display);
+        }
+        .footer-link:hover { -webkit-text-stroke: 1px #000; color: transparent; }
+    </style>
+</head>
+<body>
+    <div class="noise-layer"></div>
+    <div class="perforation perf-l"></div>
+    <div class="perforation perf-r"></div>
+
+    <div class="container">
+        <!-- Шапка с пилюлями и языками -->
+        <div class="header-top" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <div style="display: flex; gap: 10px;">
+                <div class="badge-md">
+                    <span class="material-symbols-rounded">location_on</span>
+                    <span data-i18n="location">Chisinau, Moldova 🇲🇩</span>
+                </div>
+                <div class="badge-md" style="background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container);">
+                    ● <span data-i18n="status">Available for work</span>
+                </div>
+            </div>
+            <div class="lang-switch" style="display: flex; gap: 10px;">
+                <button class="lang-btn active" onclick="setLang('en')">EN</button>
+                <button class="lang-btn" onclick="setLang('ro')">RO</button>
+            </div>
+        </div>
+
+        <header style="padding: 5vh 0;">
+            <h1 class="display-huge">NIKITA<br><span class="text-outline">AMBROSI</span></h1>
+            <p style="font-size: 1.5rem; margin-top: 2rem; max-width: 600px; text-transform: uppercase; font-weight: 900;" data-i18n="hero-sub">
+                CINEMATOGRAPHER • VIDEO EDITOR • MEDIA PRODUCER
+            </p>
+            
+            <!-- === НОВЫЙ БЛОК КНОПОК (полностью кастомные, с отступами и брендовыми иконками) === -->
+            <div style="display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
+                <a href="https://t.me/nnuduck" class="social-button">
+                    <i class="fab fa-telegram-plane"></i> Telegram
+                </a>
+                <a href="http://instagram.com/nnuduck" class="social-button">
+                    <i class="fab fa-instagram"></i> Instagram
+                </a>
+                <a href="mailto:tvkrsh.off@gmail.com" class="social-button">
+                    <i class="far fa-envelope"></i> Email
+                </a>
+            </div>
+        </header>
+
+        <div class="caution-tape">
+            <div class="hitchcock-quote" data-i18n="quote">
+                "Cinema is not a slice of life, it's a piece of cake" — A. HITCHCOCK
+            </div>
+        </div>
+
+        <main class="bento-grid">
+            <!-- Секция "О себе" (8 колонок) -->
+            <section class="m3-card col-8">
+                <div style="display: flex; gap: 3rem; flex-wrap: wrap; align-items: center;">
+                    <div style="width: 200px; height: 200px; background: var(--md-sys-color-primary); border-radius: 60px; overflow: hidden; border: 4px solid var(--md-sys-color-primary);">
+                        <img src="myphoto.png" alt="Nikita" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div style="flex: 1; min-width: 300px;">
+                        <h2 class="display-huge" style="font-size: 3rem;" data-i18n="about-hi">HI THERE!</h2>
+                        <p style="font-size: 1.2rem; line-height: 1.6; color: #ccc;" data-i18n="about-text">
+                            2nd-year student at MSU. I don't just "edit video"—I build visual worlds. 
+                            If it doesn't make the viewer feel something, it's not finished.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Карточка Arsenal (4 колонки) -->
+            <section class="m3-card col-4" style="background: var(--md-sys-color-primary-container);">
+                <span class="material-symbols-rounded" style="font-size: 48px; color: var(--md-sys-color-on-primary-container);">handyman</span>
+                <h3 style="margin: 15px 0; color: var(--md-sys-color-on-primary-container); font-family: var(--font-display); font-size: 1.8rem;" data-i18n="arsenal-title">Arsenal</h3>
+                <md-chip-set>
+                    <md-assist-chip label="DaVinci Resolve"></md-assist-chip>
+                    <md-assist-chip label="Adobe Premiere"></md-assist-chip>
+                    <md-assist-chip label="After Effects"></md-assist-chip>
+                    <md-assist-chip label="Photoshop"></md-assist-chip>
+                    <md-assist-chip label="Illustrator"></md-assist-chip>
+                    <md-assist-chip label="Google Pixel 7"></md-assist-chip>
+                </md-chip-set>
+            </section>
+
+            <!-- Видео 1: Интервью -->
+            <section class="m3-card col-6">
+                <div class="badge-md" style="margin-bottom: 15px; display: inline-flex;">🎤 Interview</div>
+                <h3 style="font-family: var(--font-display); font-size: 1.8rem;" data-i18n="v1-title">SERGIU PASCARU</h3>
+                <p class="video-desc" data-i18n="v1-desc">Talk with the founder of Pascaru Production. Filmmaking in Moldova.</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/7lbqbf63rmo?rel=0" allowfullscreen></iframe>
+                </div>
+            </section>
+
+            <!-- Видео 2: Visual Anthology -->
+            <section class="m3-card col-6">
+                <div class="badge-md" style="margin-bottom: 15px; display: inline-flex;">🎥 Featured Work</div>
+                <h3 style="font-family: var(--font-display); font-size: 1.8rem;" data-i18n="v2-title">VISUAL ANTHOLOGY</h3>
+                <p class="video-desc" data-i18n="v2-desc">Directing / Post-Production / Sound Design.</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/0kjBZuAoC54?rel=0" allowfullscreen></iframe>
+                </div>
+            </section>
+
+            <!-- Видео 3: Nostalgia II -->
+            <section class="m3-card col-6">
+                <div class="badge-md" style="margin-bottom: 15px; display: inline-flex;">🎓 University Project</div>
+                <h3 style="font-family: var(--font-display); font-size: 1.8rem;" data-i18n="v3-title">NOSTALGIA II</h3>
+                <p class="video-desc" data-i18n="v3-desc">Term paper work. Silent visual narrative. Work in progress.</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/YsVB21f-s60?rel=0" allowfullscreen></iframe>
+                </div>
+            </section>
+
+            <!-- Видео 4: Commercials -->
+            <section class="m3-card col-6">
+                <div class="badge-md" style="margin-bottom: 15px; display: inline-flex;">💼 Commercial</div>
+                <h3 style="font-family: var(--font-display); font-size: 1.8rem;" data-i18n="v4-title">COMMERCIAL WORKS</h3>
+                <p class="video-desc" data-i18n="v4-desc">A collection of commercial projects and advertisements.</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/7dIkzlcMvt0?rel=0" allowfullscreen></iframe>
+                </div>
+            </section>
+
+            <!-- Секция My Goals -->
+            <section class="m3-card col-12">
+                <h3 style="font-family: var(--font-display); font-size: 3.5rem; margin-bottom: 2rem;" data-i18n="goals-title">My Goals 🚀</h3>
+                <div style="display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem;">
+                    <div class="badge-md" style="font-size: 1rem; padding: 1.2rem;" data-i18n="goal1">▸ Join a top-tier Production House as Editor/Director</div>
+                    <div class="badge-md" style="font-size: 1rem; padding: 1.2rem;" data-i18n="goal2">▸ Lead Cinematographer on feature projects</div>
+                    <div class="badge-md" style="font-size: 1rem; padding: 1.2rem;" data-i18n="goal3">▸ Commercial Cinema</div>
+                    <div class="badge-md" style="font-size: 1rem; padding: 1.2rem;" data-i18n="goal4">▸ Indie / Art Projects</div>
+                    <div class="badge-md" style="font-size: 1rem; padding: 1.2rem;" data-i18n="goal5">▸ International Film Festivals</div>
+                </div>
+            </section>
+        </main>
+
+        <div class="marquee">
+            <div class="marquee-inner" data-i18n="marquee-text">
+                CREATE • DESTROY • EDIT • SHOOT • DIRECT • VFX • CREATE • DESTROY • EDIT • SHOOT • DIRECT • VFX •
+            </div>
+        </div>
+    </div>
+
+    <div class="acid-section">
+        <h2 class="display-huge" style="color: #000; margin-bottom: 2rem;">LET'S WORK</h2>
+        <div style="display: flex; justify-content: center; gap: clamp(1rem, 5vw, 4rem); flex-wrap: wrap; align-items: center;">
+            <a href="mailto:tvkrsh.off@gmail.com" class="footer-link">EMAIL</a>
+            <a href="http://instagram.com/nnuduck" class="footer-link">INSTAGRAM</a>
+            <a href="https://t.me/nnuduck" class="footer-link">TELEGRAM</a>
+        </div>
+        <p style="margin-top: 4rem; font-weight: bold; opacity: 0.6; color: #000;">© 2026 NIKITA AMBROSI</p>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                "location": "Chisinau, Moldova 🇲🇩",
+                "status": "Available for work",
+                "hero-sub": "CINEMATOGRAPHER • VIDEO EDITOR • MEDIA PRODUCER",
+                "quote": "\"Cinema is not a slice of life, it's a piece of cake\" — A. HITCHCOCK",
+                "about-hi": "HI THERE!",
+                "about-text": "2nd-year student at MSU. I don't just \"edit video\"—I build visual worlds. If it doesn't make the viewer feel something, it's not finished.",
+                "arsenal-title": "Arsenal",
+                "v1-title": "SERGIU PASCARU",
+                "v1-desc": "Talk with the founder of Pascaru Production. Filmmaking in Moldova.",
+                "v2-title": "VISUAL ANTHOLOGY",
+                "v2-desc": "Directing / Post-Production / Sound Design.",
+                "v3-title": "NOSTALGIA II",
+                "v3-desc": "Term paper work. Silent visual narrative. Work in progress.",
+                "v4-title": "COMMERCIAL WORKS",
+                "v4-desc": "A collection of commercial projects and advertisements.",
+                "marquee-text": "CREATE • DESTROY • EDIT • SHOOT • DIRECT • VFX • CREATE • DESTROY • EDIT • SHOOT • DIRECT • VFX • ",
+                "goals-title": "My Goals 🚀",
+                "goal1": "▸ Join a top-tier Production House as Editor/Director",
+                "goal2": "▸ Lead Cinematographer on feature projects",
+                "goal3": "▸ Commercial Cinema",
+                "goal4": "▸ Indie / Art Projects",
+                "goal5": "▸ International Film Festivals"
+            },
+            ro: {
+                "location": "Chișinău, Moldova 🇲🇩",
+                "status": "Disponibil pentru proiecte",
+                "hero-sub": "OPERATOR • EDITOR VIDEO • PRODUCĂTOR MEDIA",
+                "quote": "\"Cinema is not a slice of life, it's a piece of cake\" — A. HITCHCOCK",
+                "about-hi": "SALUT!",
+                "about-text": "Student în anul 2 la USM. Nu doar \"montez video\"—construiesc lumi vizuale. Dacă nu trezește nicio emoție, nu e gata.",
+                "arsenal-title": "Arsenal",
+                "v1-title": "SERGIU PASCARU",
+                "v1-desc": "Discuție cu fondatorul Pascaru Production. Cinema în Moldova.",
+                "v2-title": "ANTOLOGIE VIZUALĂ",
+                "v2-desc": "Regie / Post-producție / Sound Design.",
+                "v3-title": "NOSTALGIA II",
+                "v3-desc": "Lucrare de curs. Narațiune vizuală fără sunet. În lucru.",
+                "v4-title": "LUCRĂRI COMERCIALE",
+                "v4-desc": "O colecție de proiecte comerciale și reclame.",
+                "marquee-text": "CREEAZĂ • DISTRUGE • MONTEAZĂ • FILMEAZĂ • REGIZARE • CREEAZĂ • DISTRUGE • MONTEAZĂ • ",
+                "goals-title": "Obiectivele Mele 🚀",
+                "goal1": "▸ Să lucrez într-un production house de top ca Editor/Regizor",
+                "goal2": "▸ Operator principal în proiecte de lungmetraj",
+                "goal3": "▸ Cinema comercial",
+                "goal4": "▸ Proiecte de autor / independente",
+                "goal5": "▸ Festivaluri internaționale de film"
+            }
+        };
+
+        function setLang(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) el.innerText = translations[lang][key];
+            });
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText.toLowerCase() === lang);
+            });
+        }
+
+        // Устанавливаем английский по умолчанию
+        setLang('en');
+    </script>
+</body>
+</html>
